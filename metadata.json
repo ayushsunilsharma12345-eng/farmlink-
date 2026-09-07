@@ -1,6 +1,8 @@
 {
-  "name": "FarmLink - Agricultural Marketplace",
-  "description": "Production-grade agricultural marketplace connecting farmers, buyers, and administrators with live mandi prices, AI price forecasting, intelligent matchmaking, order workflows, and ₹0-cost architecture evaluation.",
+  "name": "OmniVoyage - Real-Time AI Travel Intelligence Platform",
+  "description": "Distributed AI-powered multimodal travel optimization platform comparing flights, rail, buses, and taxis in real time with 3D Three.js route visualizer, Kafka/Redis microservices telemetry, Grafana APM, and zero-cost cloud architecture.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

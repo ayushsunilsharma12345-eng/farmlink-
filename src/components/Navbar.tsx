@@ -1,194 +1,179 @@
 import React from 'react';
-import {
-  Sprout,
-  Building2,
-  ShieldCheck,
-  Calculator,
-  Bell,
-  Sparkles,
-  TrendingUp,
-  CheckCircle2,
-  GitBranch,
-} from 'lucide-react';
-import { UserRole, MandiPrice } from '../types';
+import { UserRole, JWTSession } from '../types';
+import { Compass, Shield, Activity, Bot, DollarSign, Globe, Zap, Key } from 'lucide-react';
 
 interface NavbarProps {
-  activeRole: UserRole;
-  onSelectRole: (role: UserRole) => void;
-  mandiPrices: MandiPrice[];
-  unreadNotifsCount: number;
-  onOpenNotifications: () => void;
-  onOpenAiAdvisor: () => void;
+  activeTab: 'optimizer' | 'advisor' | 'grafana' | 'scraper' | 'architecture';
+  onSelectTab: (tab: 'optimizer' | 'advisor' | 'grafana' | 'scraper' | 'architecture') => void;
+  userRole: UserRole;
+  onOpenAuthModal: () => void;
+  jwtSession: JWTSession;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  activeRole,
-  onSelectRole,
-  mandiPrices,
-  unreadNotifsCount,
-  onOpenNotifications,
-  onOpenAiAdvisor,
+  activeTab,
+  onSelectTab,
+  userRole,
+  onOpenAuthModal,
+  jwtSession,
 }) => {
-  return (
-    <header className="sticky top-0 z-40 bg-[#0F172A] text-white border-b border-slate-800 shadow-md">
-      {/* Live Mandi Ticker Bar in dark slate */}
-      <div className="bg-slate-950 text-slate-300 text-xs py-1.5 px-4 overflow-hidden border-b border-slate-800/80">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 font-medium shrink-0 text-emerald-400">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="font-semibold text-[11px] tracking-wider uppercase">Mandi Ticker:</span>
-          </div>
-          <div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-0.5 whitespace-nowrap text-xs">
-            {mandiPrices.map((m) => (
-              <div key={m.id} className="inline-flex items-center gap-1.5 text-slate-300">
-                <span className="font-semibold text-white">{m.commodity}</span>
-                <span className="text-slate-400">({m.mandi.split(' ')[0]}):</span>
-                <span className="font-mono text-emerald-400 font-bold">₹{m.currentPrice}/kg</span>
-                <span
-                  className={`text-[10px] font-semibold px-1 rounded ${
-                    m.changePercent >= 0 ? 'bg-emerald-900/60 text-emerald-300 border border-emerald-800' : 'bg-rose-900/60 text-rose-300 border border-rose-800'
-                  }`}
-                >
-                  {m.changePercent >= 0 ? `+${m.changePercent}%` : `${m.changePercent}%`}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="hidden lg:flex items-center gap-3 text-slate-400 text-[11px] shrink-0 font-mono">
-            <span className="flex items-center gap-1 text-slate-400">
-              <GitBranch className="w-3.5 h-3.5 text-blue-400" />
-              ayushsunilsharma12345-eng
-            </span>
-            <span>•</span>
-            <span className="text-emerald-400 font-semibold">Free Tier ($0.00)</span>
-          </div>
-        </div>
-      </div>
+  const roleBadges: Record<UserRole, { label: string; color: string }> = {
+    passenger: { label: 'Traveler (RBAC)', color: 'bg-sky-950 text-sky-400 border-sky-800' },
+    operator: { label: 'Operator (RBAC)', color: 'bg-amber-950 text-amber-400 border-amber-800' },
+    devops_admin: { label: 'DevOps Admin', color: 'bg-purple-950 text-purple-400 border-purple-800' },
+  };
 
-      {/* Main App Bar */}
+  return (
+    <header id="omnivoyage-navbar" className="sticky top-0 z-40 w-full bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
-          {/* Logo & Platform Tag */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-              P
+        <div className="flex items-center justify-between h-16">
+          {/* Logo & Platform Info */}
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-600 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
+              <Compass className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold tracking-tight text-white">FarmLink</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded">
-                  0 Cost Active
+              <div className="flex items-center space-x-2">
+                <span className="text-base font-extrabold tracking-tight text-slate-100">
+                  OmniVoyage<span className="text-sky-400">.AI</span>
+                </span>
+                <span className="hidden sm:inline-flex text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60 font-mono font-medium">
+                  $0-Cost Distributed
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block font-mono">
-                ayushsunilsharma12345-eng
+              <p className="text-[11px] text-slate-400 hidden md:block">
+                Real-Time Multimodal Travel Intelligence Platform
               </p>
             </div>
           </div>
 
-          {/* Persona / Portal Tabs with Professional Polish Slate & Blue */}
-          <nav className="flex items-center p-1 bg-slate-800/90 rounded-xl border border-slate-700/80">
+          {/* Center Navigation Tabs */}
+          <nav className="hidden lg:flex items-center space-x-1 bg-slate-900/80 p-1 rounded-2xl border border-slate-800">
             <button
-              id="tab-farmer"
-              onClick={() => onSelectRole('farmer')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeRole === 'farmer'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+              id="nav-tab-optimizer"
+              onClick={() => onSelectTab('optimizer')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'optimizer'
+                  ? 'bg-sky-500 text-slate-950 shadow-md shadow-sky-500/20'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
               }`}
             >
-              <Sprout className="w-3.5 h-3.5" />
-              <span>Farmer Portal</span>
+              <Globe className="w-3.5 h-3.5" />
+              <span>Multimodal 3D Engine</span>
             </button>
 
             <button
-              id="tab-buyer"
-              onClick={() => onSelectRole('buyer')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeRole === 'buyer'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+              id="nav-tab-advisor"
+              onClick={() => onSelectTab('advisor')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'advisor'
+                  ? 'bg-sky-500 text-slate-950 shadow-md shadow-sky-500/20'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
               }`}
             >
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Buyer Portal</span>
+              <Zap className="w-3.5 h-3.5" />
+              <span>AI Intelligence</span>
             </button>
 
             <button
-              id="tab-admin"
-              onClick={() => onSelectRole('admin')}
-              className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeRole === 'admin'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/60'
+              id="nav-tab-grafana"
+              onClick={() => onSelectTab('grafana')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'grafana'
+                  ? 'bg-sky-500 text-slate-950 shadow-md shadow-sky-500/20'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
               }`}
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Market Admin</span>
+              <Activity className="w-3.5 h-3.5" />
+              <span>Grafana APM</span>
             </button>
 
             <button
-              id="tab-architect"
-              onClick={() => onSelectRole('architect')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeRole === 'architect'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-emerald-400 hover:text-emerald-300 hover:bg-slate-700/60'
+              id="nav-tab-scraper"
+              onClick={() => onSelectTab('scraper')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'scraper'
+                  ? 'bg-sky-500 text-slate-950 shadow-md shadow-sky-500/20'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
               }`}
             >
-              <Calculator className="w-3.5 h-3.5" />
-              <span className="font-bold">₹0 Cost Evaluation</span>
+              <Bot className="w-3.5 h-3.5" />
+              <span>Selenium Farm</span>
+            </button>
+
+            <button
+              id="nav-tab-architecture"
+              onClick={() => onSelectTab('architecture')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all ${
+                activeTab === 'architecture'
+                  ? 'bg-sky-500 text-slate-950 shadow-md shadow-sky-500/20'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              <DollarSign className="w-3.5 h-3.5" />
+              <span>$0-Cost Stack</span>
             </button>
           </nav>
 
-          {/* Action Utilities & User Avatar */}
-          <div className="flex items-center gap-3">
-            {/* Monthly Accrual Callout */}
-            <div className="hidden md:block text-right">
-              <p className="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Monthly Accrual</p>
-              <p className="text-xs font-mono font-bold text-emerald-400">$0.00 USD</p>
-            </div>
-
-            {/* AI Advisor Button */}
+          {/* Right Action: Auth / JWT Token & RBAC */}
+          <div className="flex items-center space-x-2.5">
             <button
-              id="btn-ai-advisor-nav"
-              onClick={onOpenAiAdvisor}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
-              title="Open FarmLink AI RAG Assistant"
+              id="btn-auth-jwt-modal"
+              onClick={onOpenAuthModal}
+              className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-850 p-1.5 px-3 rounded-xl border border-slate-800 transition-all text-xs"
             >
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-              <span className="hidden sm:inline">AI Advisor</span>
+              <Key className="w-3.5 h-3.5 text-indigo-400" />
+              <span className={`text-[10px] px-2 py-0.5 rounded-full border font-mono ${roleBadges[userRole].color}`}>
+                {roleBadges[userRole].label}
+              </span>
             </button>
-
-            {/* Notifications Button */}
-            <button
-              id="btn-notifications-nav"
-              onClick={onOpenNotifications}
-              className="relative p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-              title="Notifications"
-            >
-              <Bell className="w-4 h-4" />
-              {unreadNotifsCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center">
-                  {unreadNotifsCount}
-                </span>
-              )}
-            </button>
-
-            {/* User Badge AS (ayushsunilsharma12345-eng) */}
-            <div className="flex items-center gap-2 pl-2 border-l border-slate-700/80">
-              <div className="w-8 h-8 rounded-full bg-slate-700 border border-slate-600 text-white flex items-center justify-center text-xs font-bold font-mono">
-                AS
-              </div>
-              <div className="hidden xl:flex flex-col text-left">
-                <span className="text-xs font-semibold text-slate-200 truncate w-28">ayushsunilsharma</span>
-                <span className="text-[10px] text-emerald-400 font-medium">Free Tier</span>
-              </div>
-            </div>
           </div>
+        </div>
+
+        {/* Mobile Sub-Navigation Bar */}
+        <div className="flex lg:hidden overflow-x-auto py-2 space-x-1 border-t border-slate-800/70 scrollbar-none">
+          <button
+            onClick={() => onSelectTab('optimizer')}
+            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap ${
+              activeTab === 'optimizer' ? 'bg-sky-500 text-slate-950 font-bold' : 'text-slate-400'
+            }`}
+          >
+            Multimodal 3D
+          </button>
+          <button
+            onClick={() => onSelectTab('advisor')}
+            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap ${
+              activeTab === 'advisor' ? 'bg-sky-500 text-slate-950 font-bold' : 'text-slate-400'
+            }`}
+          >
+            AI Intelligence
+          </button>
+          <button
+            onClick={() => onSelectTab('grafana')}
+            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap ${
+              activeTab === 'grafana' ? 'bg-sky-500 text-slate-950 font-bold' : 'text-slate-400'
+            }`}
+          >
+            Grafana APM
+          </button>
+          <button
+            onClick={() => onSelectTab('scraper')}
+            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap ${
+              activeTab === 'scraper' ? 'bg-sky-500 text-slate-950 font-bold' : 'text-slate-400'
+            }`}
+          >
+            Selenium
+          </button>
+          <button
+            onClick={() => onSelectTab('architecture')}
+            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap ${
+              activeTab === 'architecture' ? 'bg-sky-500 text-slate-950 font-bold' : 'text-slate-400'
+            }`}
+          >
+            $0-Cost Blueprint
+          </button>
         </div>
       </div>
     </header>
   );
 };
-

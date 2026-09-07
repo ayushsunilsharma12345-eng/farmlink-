@@ -1,148 +1,148 @@
-export type UserRole = 'farmer' | 'buyer' | 'admin' | 'architect';
+export type TravelMode = 'flight' | 'train' | 'bus' | 'taxi' | 'metro' | 'multimodal';
 
-export type QualityGrade = 'Grade A' | 'Grade B' | 'Grade C' | 'Organic Certified';
+export type UserRole = 'passenger' | 'operator' | 'devops_admin';
 
-export type OrderStatus =
-  | 'OFFER_SUBMITTED'
-  | 'OFFER_ACCEPTED'
-  | 'ORDER_CREATED'
-  | 'ESCROW_LOCKED'
-  | 'LOGISTICS_ASSIGNED'
-  | 'IN_TRANSIT'
-  | 'DELIVERED'
-  | 'PAYMENT_RELEASED';
+export type PreferenceFilter = 'all' | 'fastest' | 'cheapest' | 'eco' | 'reliable';
 
-export interface CommodityListing {
+export interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
+export interface CityHub {
   id: string;
-  farmerId: string;
-  farmerName: string;
-  crop: string;
-  variety: string;
-  quantityKg: number;
-  minPricePerKg: number;
-  expectedPricePerKg: number;
-  location: string;
-  state: string;
-  harvestDate: string;
-  storageType: string;
-  grade: QualityGrade;
-  verified: boolean;
-  status: 'ACTIVE' | 'PENDING_OFFER' | 'SOLD';
+  name: string;
+  city: string;
+  code: string;
+  country: string;
+  coordinates: Coordinates;
+  airport: string;
+  railStation: string;
+  busTerminal: string;
+}
+
+export interface RouteStep {
+  id: string;
+  mode: TravelMode;
+  provider: string;
+  vehicleNumber?: string;
+  fromName: string;
+  toName: string;
+  departureTime: string;
+  arrivalTime: string;
+  durationMinutes: number;
+  distanceKm: number;
+  costUSD: number;
+  co2Kg: number;
+  fromCoords: Coordinates;
+  toCoords: Coordinates;
+  transferBufferMinutes?: number;
   notes?: string;
 }
 
-export interface BuyerDemand {
-  id: string;
-  buyerId: string;
-  buyerName: string;
-  companyType: string;
-  crop: string;
-  requiredQuantityKg: number;
-  targetPriceRange: { min: number; max: number };
-  location: string;
-  deliveryDeadline: string;
-  qualityRequirement: QualityGrade;
-  status: 'OPEN' | 'FULFILLED';
-}
-
-export interface Offer {
-  id: string;
-  listingId: string;
-  buyerId: string;
-  buyerName: string;
-  farmerId: string;
-  farmerName: string;
-  crop: string;
-  offeredPricePerKg: number;
-  requestedQuantityKg: number;
-  totalAmount: number;
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'COUNTERED';
-  createdAt: string;
-  message?: string;
-}
-
-export interface Order {
-  id: string;
-  offerId: string;
-  listingId: string;
-  crop: string;
-  quantityKg: number;
-  pricePerKg: number;
-  totalAmount: number;
-  farmerName: string;
-  farmerLocation: string;
-  buyerName: string;
-  buyerLocation: string;
-  status: OrderStatus;
-  escrowStatus: 'PENDING' | 'SECURED_IN_ESCROW' | 'DISBURSED_TO_FARMER';
-  logistics: {
-    transporterName: string;
-    vehicleNumber: string;
-    driverName: string;
-    driverPhone: string;
-    distanceKm: number;
-    currentCheckpoint: string;
-    etaHours: number;
-    trackingId: string;
-  };
-  timeline: {
-    step: OrderStatus;
-    timestamp: string;
-    description: string;
-    completed: boolean;
-  }[];
-}
-
-export interface MandiPrice {
-  id: string;
-  commodity: string;
-  mandi: string;
-  state: string;
-  currentPrice: number;
-  yesterdayPrice: number;
-  changePercent: number;
-  minPrice: number;
-  maxPrice: number;
-  arrivalsTonnes: number;
-  updateTime: string;
-  historical7Days: { day: string; price: number }[];
-}
-
-export interface AIRecommendation {
-  id: string;
-  buyerId: string;
-  buyerName: string;
-  matchScore: number;
-  crop: string;
-  demandQuantityKg: number;
-  targetPrice: number;
-  location: string;
-  distanceKm: number;
-  reasons: string[];
-}
-
-export interface AppNotification {
+export interface RouteOption {
   id: string;
   title: string;
-  message: string;
-  timestamp: string;
-  type: 'offer' | 'order' | 'price_alert' | 'system' | 'ai';
-  read: boolean;
+  mode: TravelMode;
+  origin: CityHub;
+  destination: CityHub;
+  departureTime: string;
+  arrivalTime: string;
+  durationMinutes: number;
+  priceUSD: number;
+  co2Kg: number;
+  transferCount: number;
+  reliabilityScore: number; // 0 - 100%
+  delayRiskPercent: number; // 0 - 100%
+  tags: ('Recommended' | 'Fastest' | 'Cheapest' | 'Eco-Choice' | 'Direct')[];
+  steps: RouteStep[];
+  providerSummary: string;
+  carbonSavingsPercentVsFlight?: number;
+  cachedInRedis: boolean;
+  computedBy: 'FastAPI A* Optimizer' | 'Redis L2 Cache' | 'Kafka Event Aggregator';
+  computeLatencyMs: number;
 }
 
-export interface ArchitectureStage {
-  stageNumber: number;
+export interface MicroserviceNode {
+  id: string;
   name: string;
-  costLabel: string;
-  timeEstimate: string;
-  description: string;
-  targetUsers: string;
-  stack: {
-    category: string;
-    technology: string;
-    costInRupees: string;
-    purpose: string;
-  }[];
-  pros: string[];
-  caveats: string[];
+  role: string;
+  stack: string;
+  status: 'healthy' | 'warning' | 'restarting';
+  latencyMs: number;
+  rps: number;
+  cpuUsage: number;
+  memoryUsageMb: number;
+  replicas: number;
+  port: number;
+  costPerMonth: string;
+  freeTierAlloc: string;
+}
+
+export interface KafkaTopicMetric {
+  topic: string;
+  partitions: number;
+  replicationFactor: number;
+  messagesPerSec: number;
+  lag: number;
+  bytesInSec: number;
+  consumerGroup: string;
+}
+
+export interface RedisCacheStats {
+  status: 'connected';
+  totalKeys: number;
+  hitRatePercent: number;
+  memoryUsedMb: number;
+  maxMemoryMb: number;
+  opsPerSec: number;
+  avgReadLatencyMs: number;
+  evictionPolicy: string;
+}
+
+export interface GrafanaLogEntry {
+  id: string;
+  timestamp: string;
+  service: string;
+  level: 'INFO' | 'WARN' | 'ERROR' | 'DEBUG';
+  message: string;
+  traceId: string;
+}
+
+export interface SeleniumScraperTask {
+  id: string;
+  targetProvider: string;
+  sourceType: 'flight' | 'rail' | 'bus' | 'ridehail';
+  status: 'running' | 'idle' | 'success' | 'rate-limited';
+  headlessWorkers: number;
+  recordsScrapedPerMin: number;
+  lastScrapedAt: string;
+  antiBotBypass: string;
+  avgDurationSec: number;
+}
+
+export interface JWTSession {
+  token: string;
+  decoded: {
+    sub: string;
+    email: string;
+    name: string;
+    role: UserRole;
+    scopes: string[];
+    iat: number;
+    exp: number;
+    iss: string;
+    clusterTenant: string;
+  };
+  isValid: boolean;
+}
+
+export interface ZeroCostComponent {
+  component: string;
+  role: string;
+  productionTech: string;
+  zeroCostAlternative: string;
+  freeTierLimits: string;
+  scalingThreshold: string;
+  operationalStrategy: string;
 }
