@@ -1,0 +1,6 @@
+{
+  "name": "FarmLink - Agricultural Marketplace",
+  "description": "Production-grade agricultural marketplace connecting farmers, buyers, and administrators with live mandi prices, AI price forecasting, intelligent matchmaking, order workflows, and ₹0-cost architecture evaluation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
